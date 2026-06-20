@@ -35,7 +35,7 @@ function App() {
           <nav className="navbar glass-panel">
             <div className="nav-brand">
               <Map size={28} color="#38bdf8" />
-              WebGIS Sampah
+              WebSampahku
             </div>
             <button className="btn" style={{ background: 'transparent', border: '1px solid var(--border-glass)', color: 'var(--text-main)' }} onClick={handleLogout}>
               <LogOut size={18} /> Keluar

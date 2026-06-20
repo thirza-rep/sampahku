@@ -55,7 +55,7 @@ export default function Login() {
               <MapPin size={40} color="var(--primary-color)" />
             </div>
           </div>
-          <h2>{isLogin ? 'Masuk ke WebGIS' : 'Daftar Akun WebGIS'}</h2>
+          <h2>{isLogin ? 'Masuk ke WebSampahku' : 'Daftar Akun Baru'}</h2>
           <p>Sistem Informasi Geografis Pengelolaan Sampah</p>
         </div>
         
@@ -82,7 +82,6 @@ export default function Login() {
                 >
                   <option value="warga">Warga</option>
                   <option value="transporter">Transporter / Petugas Kebersihan</option>
-                  <option value="admin">Admin</option>
                 </select>
               </div>
             </>
