@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../supabase';
 import { createClient } from '@supabase/supabase-js';
 import Map from '../components/Map';
-import { Trash2, PlusCircle, X, CheckCircle, Navigation, Sun, Moon, Edit } from 'lucide-react';
+import { Trash2, PlusCircle, X, CheckCircle, Navigation, Sun, Moon, Edit, BarChart, Users, TrendingUp, Coins } from 'lucide-react';
 
 export default function Dashboard({ session }) {
   const [role, setRole] = useState(null);
@@ -322,21 +322,26 @@ export default function Dashboard({ session }) {
           </div>
           
           {role === 'admin' && (
-            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem', borderBottom: '1px solid var(--border-glass)', paddingBottom: '1rem' }}>
+            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem', borderBottom: '1px solid var(--border-glass)', paddingBottom: '1rem', flexWrap: 'wrap' }}>
               <button 
                 onClick={() => { setAdminTab('sampah'); setLoading(true); fetchData(); }}
-                style={{ flex: 1, padding: '0.5rem', borderRadius: '8px', cursor: 'pointer', border: 'none', background: adminTab === 'sampah' ? '#38bdf8' : 'var(--glass-badge-bg)', color: adminTab === 'sampah' ? 'white' : 'var(--text-main)' }}>
+                style={{ flex: 1, minWidth: '120px', padding: '0.5rem', borderRadius: '8px', cursor: 'pointer', border: 'none', background: adminTab === 'sampah' ? '#38bdf8' : 'var(--glass-badge-bg)', color: adminTab === 'sampah' ? 'white' : 'var(--text-main)' }}>
                 Laporan Sampah
               </button>
               <button 
                 onClick={() => { setAdminTab('oversight'); setLoading(true); fetchData(); }}
-                style={{ flex: 1, padding: '0.5rem', borderRadius: '8px', cursor: 'pointer', border: 'none', background: adminTab === 'oversight' ? '#8b5cf6' : 'var(--glass-badge-bg)', color: adminTab === 'oversight' ? 'white' : 'var(--text-main)' }}>
+                style={{ flex: 1, minWidth: '120px', padding: '0.5rem', borderRadius: '8px', cursor: 'pointer', border: 'none', background: adminTab === 'oversight' ? '#8b5cf6' : 'var(--glass-badge-bg)', color: adminTab === 'oversight' ? 'white' : 'var(--text-main)' }}>
                 Oversight Warga
               </button>
               <button 
                 onClick={() => { setAdminTab('users'); setLoading(true); fetchData(); }}
-                style={{ flex: 1, padding: '0.5rem', borderRadius: '8px', cursor: 'pointer', border: 'none', background: adminTab === 'users' ? '#f59e0b' : 'var(--glass-badge-bg)', color: adminTab === 'users' ? 'white' : 'var(--text-main)' }}>
-                Manajemen Pengguna
+                style={{ flex: 1, minWidth: '120px', padding: '0.5rem', borderRadius: '8px', cursor: 'pointer', border: 'none', background: adminTab === 'users' ? '#f59e0b' : 'var(--glass-badge-bg)', color: adminTab === 'users' ? 'white' : 'var(--text-main)' }}>
+                Pengguna
+              </button>
+              <button 
+                onClick={() => { setAdminTab('statistik'); setLoading(true); fetchData(); }}
+                style={{ flex: 1, minWidth: '120px', padding: '0.5rem', borderRadius: '8px', cursor: 'pointer', border: 'none', background: adminTab === 'statistik' ? '#10b981' : 'var(--glass-badge-bg)', color: adminTab === 'statistik' ? 'white' : 'var(--text-main)' }}>
+                Statistik
               </button>
             </div>
           )}
@@ -386,6 +391,50 @@ export default function Dashboard({ session }) {
                       </div>
                     </div>
                   ))}
+                </>
+              ) : role === 'admin' && adminTab === 'statistik' ? (
+                <>
+                  <h4 style={{ color: 'var(--text-main)', marginBottom: '1rem' }}>Ringkasan Statistik</h4>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem' }}>
+                    
+                    <div className="glass-panel" style={{ padding: '1rem', textAlign: 'center' }}>
+                      <Users size={24} color="#38bdf8" style={{ marginBottom: '0.5rem' }} />
+                      <h3 style={{ fontSize: '1.8rem', margin: '0', color: 'var(--text-main)' }}>{wargaList.length}</h3>
+                      <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>Total Warga</p>
+                    </div>
+
+                    <div className="glass-panel" style={{ padding: '1rem', textAlign: 'center' }}>
+                      <Trash2 size={24} color="#f59e0b" style={{ marginBottom: '0.5rem' }} />
+                      <h3 style={{ fontSize: '1.8rem', margin: '0', color: 'var(--text-main)' }}>{usersList.filter(u => u.role === 'transporter').length}</h3>
+                      <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>Pengangkut</p>
+                    </div>
+
+                    <div className="glass-panel" style={{ padding: '1rem', textAlign: 'center' }}>
+                      <TrendingUp size={24} color="#10b981" style={{ marginBottom: '0.5rem' }} />
+                      <h3 style={{ fontSize: '1.8rem', margin: '0', color: 'var(--text-main)' }}>
+                        {sampahList.filter(s => s.status === 'Selesai').length}
+                        <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>/{sampahList.length}</span>
+                      </h3>
+                      <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>Sampah Diangkut</p>
+                    </div>
+
+                    <div className="glass-panel" style={{ padding: '1rem', textAlign: 'center' }}>
+                      <BarChart size={24} color="#8b5cf6" style={{ marginBottom: '0.5rem' }} />
+                      <h3 style={{ fontSize: '1.8rem', margin: '0', color: 'var(--text-main)' }}>
+                        {sampahList.filter(s => s.status === 'Selesai').reduce((acc, curr) => acc + (curr.berat_kg || 0), 0)}<span style={{ fontSize: '1rem' }}>kg</span>
+                      </h3>
+                      <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>Total Berat</p>
+                    </div>
+
+                    <div className="glass-panel" style={{ padding: '1rem', textAlign: 'center', gridColumn: '1 / -1' }}>
+                      <Coins size={28} color="#f59e0b" style={{ marginBottom: '0.5rem' }} />
+                      <h3 style={{ fontSize: '2rem', margin: '0', color: '#10b981' }}>
+                        Rp {(wargaList.filter(w => w.status_bayar === 'Sudah' || w.status_bayar === 'Lunas').length * 20000).toLocaleString('id-ID')}
+                      </h3>
+                      <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>Total Pendapatan Iuran</p>
+                    </div>
+
+                  </div>
                 </>
               ) : role === 'admin' && adminTab === 'users' ? (
                 <>
